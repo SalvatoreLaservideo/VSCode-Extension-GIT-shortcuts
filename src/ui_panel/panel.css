@@ -1,0 +1,194 @@
+body {
+    padding: 8px;
+    margin: 0;
+    font-family: var(--vscode-font-family);
+    color: var(--vscode-foreground);
+    background-color: var(--vscode-editor-background);
+
+    &::before {
+        content: "css ✓";
+        position: fixed;
+        bottom: 6px;
+        right: 4px;
+        background-color: var(--vscode-editor-background);
+        color: var(--vscode-descriptionForeground);
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-size: 9px;
+        font-family: var(--vscode-font-family);
+    }
+}
+
+/* ── layout ──────────────────────────────────── */
+
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: flex-start;
+}
+
+.card {
+    background-color: var(--vscode-editorWidget-background);
+    border: 1px solid var(--vscode-panel-border);
+    border-radius: 3px;
+    padding: 6px 7px 5px;
+    min-width: 130px;
+}
+
+.card-full {
+    flex: 1 1 100%;
+}
+
+.card-row {
+    display: flex;
+    gap: 6px;
+    flex: 1 1 100%;
+    align-items: flex-start;
+}
+
+.card-row>.card {
+    flex: 1;
+    min-width: 0;
+}
+
+.card-title {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--vscode-descriptionForeground);
+    margin-bottom: 4px;
+}
+
+.btn-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+}
+
+/* ── controls ────────────────────────────────── */
+
+.btn {
+    display: block;
+    width: 100%;
+    padding: 4px 8px;
+    margin-bottom: 3px;
+    background-color: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    font-size: 11px;
+    text-align: left;
+    font-family: var(--vscode-editor-font-family, monospace);
+    transition: opacity 0.1s;
+    white-space: nowrap;
+}
+
+.btn:last-child {
+    margin-bottom: 0;
+}
+
+.btn-row .btn {
+    width: auto;
+    margin-bottom: 0;
+}
+
+.btn:hover {
+    background-color: var(--vscode-button-hoverBackground);
+}
+
+.btn:active {
+    opacity: 0.7;
+}
+
+.btn.type-only {
+    background-color: var(--vscode-button-secondaryBackground);
+    color: var(--vscode-button-secondaryForeground);
+}
+
+.btn.type-only:hover {
+    background-color: var(--vscode-button-secondaryHoverBackground);
+}
+
+.input-row {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.input-row .branch-input {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.btn-save {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px 4px;
+    background: none;
+    border: 1px solid var(--vscode-panel-border);
+    border-radius: 2px;
+    color: var(--vscode-descriptionForeground);
+    cursor: pointer;
+    line-height: 1;
+    transition: all 0.1s;
+}
+
+.btn-save svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+    display: block;
+}
+
+.btn-save:hover {
+    background-color: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+    border-color: var(--vscode-button-background);
+}
+
+.btn-save.saved {
+    color: var(--vscode-successIcon-foreground);
+    border-color: var(--vscode-successIcon-foreground);
+}
+
+.branch-input {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 4px 8px;
+    margin-bottom: 5px;
+    background-color: var(--vscode-input-background);
+    color: var(--vscode-input-foreground);
+    border: 1px solid var(--vscode-input-border, transparent);
+    border-radius: 2px;
+    font-size: 11px;
+    font-family: var(--vscode-editor-font-family, monospace);
+    outline: none;
+}
+
+.branch-input:focus {
+    border-color: var(--vscode-focusBorder);
+}
+
+/* ── debug badge ─────────────────────────────── */
+
+.js-running-check-ok {
+    position: fixed;
+    bottom: 6px;
+    right: 35px;
+    background-color: var(--vscode-editor-background);
+    color: var(--vscode-descriptionForeground);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 9px;
+    font-family: var(--vscode-font-family);
+}
+
+.hidden-inline-icons {
+    display: none !important;
+}

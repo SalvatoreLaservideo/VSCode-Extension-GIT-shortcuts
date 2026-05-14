@@ -1,0 +1,57 @@
+{
+  "name": "gitextensionwrap",
+  "displayName": "Git Extension Wrap",
+  "description": "shortcuts for git bash",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.120.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ITLaservideo/VSCode-Extension-GIT-shortcuts.git"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "gitextensionwrap.helloWorld",
+        "title": "Mock Git Shortcut Extension Active!"
+      },
+      {
+        "command": "gitextensionwrap.openGitBash",
+        "title": "Open Git Bash"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "gitextensionwrap.openGitBash",
+          "group": "navigation@100",
+          "when": "explorerResourceIsFolder || !explorerResourceIsFolder"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.120.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "22.x",
+    "typescript-eslint": "^8.56.1",
+    "eslint": "^9.39.3",
+    "typescript": "^5.9.3",
+    "@vscode/test-cli": "^0.0.12",
+    "@vscode/test-electron": "^2.5.2"
+  }
+}

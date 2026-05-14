@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; style-src {{cspSource}}; script-src {{cspSource}};">
+    <link rel="stylesheet" href="{{cssUri}}">
+    <title>Git Shortcuts</title>
+</head>
+
+<body>
+    <svg hidden class="hidden-inline-icons">
+        <symbol id="icon-save" viewBox="0 -960 960 960">
+            <path
+                d="m640-480 80 80v80H520v240l-40 40-40-40v-240H240v-80l80-80v-280h-40v-80h400v80h-40v280Zm-286 80h252l-46-46v-314H400v314l-46 46Zm126 0Z" />
+        </symbol>
+    </svg>
+    <div class="grid">
+        <div class="card">
+            <div class="card-title">Info</div>
+            <button class="btn" id="status-btn">git status</button>
+            <!-- <button class="btn" id="log-btn">git log &gt; main</button> -->
+            <button class="btn" id="branch-btn">git branch</button>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Sync</div>
+            <button class="btn" id="pull-btn">git pull</button>
+            <button class="btn" id="push-btn">git push</button>
+        </div>
+        <div class="card-row">
+            <div class="card">
+                <div class="card-title">Main branch</div>
+                <div class="input-row">
+                    <input class="branch-input" id="main-branch-name" type="text" placeholder="main branch name"
+                        value="{{mainBranchName}}" spellcheck="false" />
+                    <button class="btn-save" id="save-main-branch-btn" title="Remember"><svg>
+                            <use href="#icon-save" />
+                        </svg></button>
+                </div>
+                <button class="btn" id="main-log-to-file-btn">git log &gt;</button>
+                <button class="btn" id="main-checkout-btn">git checkout</button>
+            </div>
+            <div class="card">
+                <div class="card-title">Branch</div>
+                <div class="input-row">
+                    <input class="branch-input" id="branch-name" type="text" placeholder="branch name"
+                        value="{{localBranchName}}" spellcheck="false" />
+                    <button class="btn-save" id="save-branch-btn" title="Remember"><svg>
+                            <use href="#icon-save" />
+                        </svg></button>
+                </div>
+                <button class="btn" id="checkout-btn">git checkout</button>
+                <button class="btn" id="log-to-file-btn">git log &gt;</button>
+                <button class="btn" id="checkout-new-btn">git checkout -b</button>
+                <button class="btn" id="branch-delete-btn">git branch -D</button>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title">Stage by type</div>
+            <button class="btn" id="add-png-btn">git add *.png</button>
+            <button class="btn" id="add-svg-btn">git add *.svg</button>
+            <button class="btn" id="add-jpeg-btn">git add *.jpeg</button>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Danger — types only</div>
+            <button class="btn type-only" id="rebase-interactive-btn">git rebase -i HEAD~</button>
+            <button class="btn type-only" id="reset-hard-btn">git reset --hard origin/main</button>
+            <button class="btn type-only" id="reset-hard-push-btn">git push origin main --force</button>
+        </div>
+    </div>
+    <script src="{{jsUri}}"></script>
+</body>
+
+</html>
