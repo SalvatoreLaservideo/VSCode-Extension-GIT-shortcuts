@@ -67,6 +67,12 @@ export function activate(context: vscode.ExtensionContext) {
                 location: { viewColumn: vscode.ViewColumn.Beside },
             });
             terminal.show();
+            await vscode.commands.executeCommand('workbench.action.terminal.fontZoomReset');
+            await vscode.commands.executeCommand('workbench.action.terminal.fontZoomOut');
+            await vscode.commands.executeCommand('workbench.action.setEditorGroupLayout', {
+                orientation: 0,
+                groups: [{ size: 0.33 }, { size: 0.67 }],
+            });
 
             // --- mutual close logic ---
             let disposed = false;
