@@ -79,9 +79,10 @@ export function activate(context: vscode.ExtensionContext) {
             let onTerminalClose: vscode.Disposable;
             let onFolderChange: vscode.Disposable;
 
-            function closeAll() {
+            async function closeAll() {
                 if (disposed) { return; }
                 disposed = true;
+                await vscode.commands.executeCommand('workbench.action.terminal.fontZoomReset');
                 terminal.dispose();
                 panel.dispose();
                 onTerminalClose.dispose();
