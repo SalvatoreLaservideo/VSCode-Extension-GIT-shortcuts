@@ -1,9 +1,9 @@
 # install
 `npm install -g @vscode/vsce`
 ```bash
-  vsce package  # Generates a .vsix fileecho %CD%
+  vsce package -o packaged.vsix # Generates a .vsix fileecho %CD%
   code.cmd --version # verify using the vscode CLI
-  code.cmd --install-extension gitextensionwrap-0.0.1.vsix
+  code.cmd --install-extension packaged.vsix
 ```
 # Git Extension Wrap
 
