@@ -17,6 +17,7 @@ const buttonCommands = {
     'pull-btn': 'pull',
     'push-btn': 'push',
     'reset-hard-push-btn': 'resetHardPush',
+    'cherry-pick-btn': 'cherryPick',
 };
 
 for (const [id, command] of Object.entries(buttonCommands)) {

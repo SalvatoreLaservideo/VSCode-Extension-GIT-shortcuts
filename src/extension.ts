@@ -31,6 +31,16 @@ export function activate(context: vscode.ExtensionContext) {
             const config = loadOrCreateConfig(targetPath);
             const gitExe = config['git-exe'];
             const bashExe = config['bash-exe'];
+
+            // fs.writeFileSync(path.join(targetPath, `debug.log`), (JSON.stringify(await vscode.commands.getCommands())), 'utf8');
+            const file_path_main_log = path.join(targetPath, `${config['main-branch-name']}`);
+            const file_path_temp_log = path.join(targetPath, `${config['local-branch-name']}`);
+            let the_vscode_diff: vscode.Tab | null = null;
+            if (fs.existsSync(file_path_main_log) && fs.existsSync(file_path_temp_log)) {
+                await vscode.commands.executeCommand('vscode.diff', vscode.Uri.file(file_path_main_log), vscode.Uri.file(file_path_temp_log), 'Main Log ↔ Local Log');
+                the_vscode_diff = vscode.window.tabGroups.activeTabGroup.activeTab ?? null;
+                // await vscode.commands.executeCommand('workbench.action.moveEditorToNewWindow');
+            }
             let maybe_shellPath = fs.existsSync(bashExe) ? bashExe : gitExe;
             if (!fs.existsSync(maybe_shellPath)) {
                 const newPath = await vscode.window.showInputBox({
@@ -54,7 +64,7 @@ export function activate(context: vscode.ExtensionContext) {
             }
             const shellPath = maybe_shellPath;
             // Open panel in main window first, then move it to a new window.
-            const panel = vscode.window.createWebviewPanel(
+            const the_panel_shortcuts = vscode.window.createWebviewPanel(
                 'gitShortcuts',
                 'Git Shortcuts',
                 vscode.ViewColumn.Nine,
@@ -65,10 +75,10 @@ export function activate(context: vscode.ExtensionContext) {
             );
 
             try {
-                panel.webview.html = getWebviewContent(panel.webview, context.extensionUri, config);
+                the_panel_shortcuts.webview.html = getWebviewContent(the_panel_shortcuts.webview, context.extensionUri, config);
             } catch (err) {
                 logError(targetPath, 'getWebviewContent', err);
-                panel.webview.html = `<body style="color:red;font-family:sans-serif;padding:1em">
+                the_panel_shortcuts.webview.html = `<body style="color:red;font-family:sans-serif;padding:1em">
                     <b>Git Shortcuts failed to load.</b><br>
                     Check <code>.git-extension-wrap/errors.log</code> for details.
                 </body>`;
@@ -78,7 +88,7 @@ export function activate(context: vscode.ExtensionContext) {
 
             // Give the new window time to open and become the active window.
             await new Promise<void>(resolve => setTimeout(resolve, 500));
-
+            await vscode.commands.executeCommand('workbench.action.toggleWindowAlwaysOnTop');
             // Terminal is created in the now-active new window, beside the panel.
             const terminal = vscode.window.createTerminal({
                 name: 'Git Bash',
@@ -89,12 +99,10 @@ export function activate(context: vscode.ExtensionContext) {
             terminal.show();
             await vscode.commands.executeCommand('workbench.action.terminal.fontZoomReset');
             await vscode.commands.executeCommand('workbench.action.terminal.fontZoomOut');
-            //[2026-05-14T21:20:47.512Z] [openGitBash]
-            //command 'workbench.action.setEditorGroupLayout' not found
-            // await vscode.commands.executeCommand('workbench.action.setEditorGroupLayout', {
-            //     orientation: 0,
-            //     groups: [{ size: 0.33 }, { size: 0.67 }],
-            // });
+            await new Promise<void>(resolve => setTimeout(resolve, 500));
+            // for (let i = 0; i < 10; i++) {
+            //     await vscode.commands.executeCommand("workbench.action.increaseViewWidth");
+            // }
 
             // --- mutual close logic ---
             let disposed = false;
@@ -106,12 +114,29 @@ export function activate(context: vscode.ExtensionContext) {
                 disposed = true;
                 await vscode.commands.executeCommand('workbench.action.terminal.fontZoomReset');
                 terminal.dispose();
-                panel.dispose();
+                the_panel_shortcuts.dispose();
                 onTerminalClose.dispose();
                 onFolderChange.dispose();
+                if (the_vscode_diff) {
+                    let tab_closed = false;
+                    for (const group of vscode.window.tabGroups.all) {
+                        if (tab_closed) { break; }
+                        for (const tab of group.tabs) {
+                            if (tab.input instanceof vscode.TabInputTextDiff) {
+                                const input = tab.input as vscode.TabInputTextDiff;
+                                if (input.original.fsPath === file_path_main_log || input.modified.fsPath === file_path_temp_log) {
+                                    if (await vscode.window.tabGroups.close(tab)) {
+                                        tab_closed = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
-            panel.onDidDispose(closeAll);
+            the_panel_shortcuts.onDidDispose(closeAll);
 
             onTerminalClose = vscode.window.onDidCloseTerminal(t => {
                 if (t === terminal) { closeAll(); }
@@ -124,7 +149,7 @@ export function activate(context: vscode.ExtensionContext) {
             context.subscriptions.push({ dispose: closeAll });
             // --------------------------
 
-            panel.webview.onDidReceiveMessage(async (message: { command: string; branchName?: string; key?: string; value?: string }) => {
+            the_panel_shortcuts.webview.onDidReceiveMessage(async (message: { command: string; branchName?: string; key?: string; value?: string }) => {
                 try {
                     const b = (message.branchName ?? '').trim();
 
@@ -155,6 +180,7 @@ export function activate(context: vscode.ExtensionContext) {
                         rebaseInteractive: { text: 'git rebase -i HEAD~', run: false },
                         resetHard: { text: 'git reset --hard origin/main', run: false },
                         resetHardPush: { text: 'git push origin main --force', run: false },
+                        cherryPick: { text: `git cherry-pick `, run: false },
                         pull: { text: 'git pull', run: true },
                         push: { text: 'git push', run: true },
                         checkoutNew: { text: `git checkout -b ${b}`, run: true },
@@ -172,6 +198,7 @@ export function activate(context: vscode.ExtensionContext) {
                     logError(targetPath, `webview message: ${message.command}`, err);
                 }
             });
+
         } catch (err) {
             logError(targetPath, 'openGitBash', err);
             vscode.window.showErrorMessage(`Git Shortcuts error — see .git-extension-wrap/errors.log`);
