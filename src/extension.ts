@@ -192,7 +192,12 @@ export function activate(context: vscode.ExtensionContext) {
                     const def = defs[message.command];
                     if (def) {
                         terminal.show();
-                        terminal.sendText(def.text, def.run);
+                        if (def.text.startsWith("git branch -D")) {
+                            terminal.sendText(`git branch -D ${b}_backup`, true);
+                            terminal.sendText(`git branch -m ${b} ${b}_backup`, true);
+                        } else {
+                            terminal.sendText(def.text, def.run);
+                        }
                     }
                 } catch (err) {
                     logError(targetPath, `webview message: ${message.command}`, err);
