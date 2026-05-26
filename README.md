@@ -1,5 +1,7 @@
 # install
 `npm install -g @vscode/vsce`
+`npm install -g typescript` // installs typescript globally
+`npm install` //create node_modules
 ```bash
   vsce package -o packaged.vsix # Generates a .vsix fileecho %CD%
   code.cmd --version # verify using the vscode CLI
